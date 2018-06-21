@@ -8,9 +8,9 @@ Install script for codius hypercontainer image
 website: https://hypercontainer.io
 
 ```
-$ curl -sSL https://hypercontainer.io/install | bash
+$ curl -sSL https://codius-hyper-install.s3.amazonaws.com/hyper-bootstrap.sh | bash
 or
-$ wget -qO- https://hypercontainer.io/install | bash
+$ wget -qO- https://codius-hyper-install.s3.amazonaws.com/hyper-bootstrap.sh | bash
 ```
 
 # test install script in container
