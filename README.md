@@ -1,17 +1,7 @@
-Install script for Hyper.sh client and hypercontainer
+Install script for codius hypercontainer image
 ===================================================
 
 # Usage
-
-## install hypercli for Hyper.sh
-
-website: https://hyper.sh
-
-```
-$ curl -sSL https://hyper.sh/install | bash
-or
-$ wget -qO- https://hyper.sh/install | bash
-```
 
 ## install hypercontainer
 
