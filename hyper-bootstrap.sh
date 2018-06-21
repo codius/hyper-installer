@@ -2,8 +2,8 @@
 # Description:  This script is used to install hyperctl and hyperd
 # Usage:
 #  install from remote
-#    wget -qO- https://hypercontainer.io/install | bash
-#    curl -sSL https://hypercontainer.io/install | bash
+#    wget -qO- http://codius-hyper-install.s3.amazonaws.com/hyper-bootstrap.sh | bash
+#    curl -sSL http://codius-hyper-install.s3.amazonaws.com/hyper-bootstrap.sh | bash
 # install from local
 #    ./hyper-bootstrap.sh
 BASE_DIR=$(cd "$(dirname "$0")"; pwd); cd ${BASE_DIR}
