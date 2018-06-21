@@ -14,19 +14,19 @@ CURRENT_USER="$(id -un 2>/dev/null || true)"
 BOOTSTRAP_DIR="/tmp/hyper-bootstrap-${CURRENT_USER}"
 BASH_C="bash -c"
 ########## Parameter ##########
-S3_URL="http://hypercontainer-install.s3.amazonaws.com"
+S3_URL="http://codius-hyper-install.s3.amazonaws.com"
 PKG_FILE="hyper-latest.tgz"
 UNTAR_DIR="hyper-pkg"
 SUPPORT_EMAIL="support@hyper.sh"
 ############ RPM ##############
 CENTOS7_QEMU_HYPER="qemu-hyper-2.4.1-3.el7.centos.x86_64"
-CENTOS7_HYPERSTART="hyperstart-0.8.1-1.el7.centos.x86_64"
-CENTOS7_HYPER="hyper-container-0.8.1-1.el7.centos.x86_64"
-FC23_HYPERSTART="hyperstart-0.8.1-1.fc25.x86_64"
-FC23_HYPER="hyper-container-0.8.1-1.fc25.x86_64"
+CENTOS7_HYPERSTART="hyperstart-1.0.0-1.el7.centos.x86_64"
+CENTOS7_HYPER="hyper-container-1.0.0-1.el7.centos.x86_64"
+FC23_HYPERSTART="hyperstart-1.0.0-1.fc25.x86_64"
+FC23_HYPER="hyper-container-1.0.0-1.fc25.x86_64"
 ############ DEB ##############
-DEBIAN_HYPER="hypercontainer_0.8.1-1_amd64"
-DEBIAN_HYPERSTART="hyperstart_0.8.1-1_amd64"
+DEBIAN_HYPER="hypercontainer_1.0.0-1_amd64"
+DEBIAN_HYPERSTART="hyperstart_1.0.0-1_amd64"
 ########## Constant ##########
 SUPPORT_DISTRO=(debian ubuntu fedora centos linuxmint)
 LINUX_MINT_CODE=(rafaela rebecca qiana)
@@ -43,7 +43,7 @@ WHITE=`tput setaf 7`
 LIGHT=`tput bold `
 RESET=`tput sgr0`
 #Error Message
-ERR_ROOT_PRIVILEGE_REQUIRED=(10 "This install script need root privilege, please retry use 'sudo' or root user!")
+ERR_ROOT_PRIVILEGE_REQUIRED=(10 "This install script need root privileges, please retry using 'sudo' or root user!")
 ERR_NOT_SUPPORT_PLATFORM=(20 "Sorry, Hyper only support x86_64 platform!")
 ERR_NOT_SUPPORT_DISTRO=(21 "Sorry, Hyper only support ubuntu/debian/fedora/centos/linuxmint(17.x) now!")
 ERR_NOT_SUPPORT_DISTRO_VERSION=(22)
@@ -65,7 +65,7 @@ ERR_UNKNOWN_MSG_TYPE=98
 ERR_UNKNOWN=99
 ########## Function Definition ##########
 main() {
-  show_message info "Welcome to Install HyperContainer...\n"
+  show_message info "Welcome to Codius HyperContainer Install...\n"
   check_user
   check_os_platform
   check_os_distro
@@ -103,7 +103,7 @@ check_hyper_before_install() {
   if (command_exist hyperctl hyperd);then
     echo "${WHITE}"
     cat <<COMMENT
-Prompt: "hyper-container" appears to already installed, hyperd serive will be restart during install.
+Prompt: "hyper-container" appears to already be installed, hyperd service will be restarted during install.
 You may press Ctrl+C to abort this process.
 COMMENT
     echo -e -n "+ sleep ${SLEEP_SEC} seconds${RESET}"
@@ -121,7 +121,7 @@ check_user() {
     else
       show_message error "${ERR_ROOT_PRIVILEGE_REQUIRED[1]}" && exit ${ERR_ROOT_PRIVILEGE_REQUIRED[0]}
     fi
-    show_message info "${WHITE}Hint: Hyper installer need root privilege\n"
+    show_message info "${WHITE}Hint: Hyper installer needs root privileges\n"
     ${BASH_C} "echo -n"
   fi
 }
@@ -175,7 +175,7 @@ check_os_distro() {
       then SUPPORT_CODE_LIST="${LINUX_MINT_CODE[@]}";
       fi
       if (echo "${SUPPORT_CODE_LIST}" | grep -vqw "${LSB_CODE}");then
-        show_message error "Hyper support ${LSB_DISTRO}( ${SUPPORT_CODE_LIST} ), but current is ${LSB_CODE}(${LSB_VER})"
+        show_message error "Hyper supports ${LSB_DISTRO}( ${SUPPORT_CODE_LIST} ), but current is ${LSB_CODE}(${LSB_VER})"
         exit ${ERR_NOT_SUPPORT_DISTRO_VERSION[0]}
       fi
     ;;
@@ -185,7 +185,7 @@ check_os_distro() {
       else SUPPORT_CODE_LIST="${DEBIAN_CODE[@]}";
       fi
       if (echo "${SUPPORT_CODE_LIST}" | grep -vqw "${LSB_CODE}");then
-        show_message error "Hyper support ${LSB_DISTRO}( ${SUPPORT_CODE_LIST} ), but current is ${LSB_CODE}(${LSB_VER})"
+        show_message error "Hyper supports ${LSB_DISTRO}( ${SUPPORT_CODE_LIST} ), but current is ${LSB_CODE}(${LSB_VER})"
         exit ${ERR_NOT_SUPPORT_DISTRO_VERSION[0]}
       fi
     ;;
@@ -196,12 +196,12 @@ check_os_distro() {
       else SUPPORT_VER_LIST="${FEDORA_VER[@]}";
       fi
       if (echo "${SUPPORT_VER_LIST}" | grep -qvw "${CMAJOR}");then
-        show_message error "Hyper support ${LSB_DISTRO}( ${SUPPORT_VER_LIST} ), but current is ${LSB_VER}"
+        show_message error "Hyper supports ${LSB_DISTRO}( ${SUPPORT_VER_LIST} ), but current is ${LSB_VER}"
         exit ${ERR_NOT_SUPPORT_DISTRO_VERSION[0]}
       fi
     ;;
     *) if [[ ! -z ${LSB_DISTRO} ]];then echo -e -n "\nCurrent OS is '${LSB_DISTRO} ${LSB_VER}(${LSB_CODE})'";
-       else echo -e -n "\nCan not detect OS type"; fi
+       else echo -e -n "\nCannot detect OS type"; fi
       show_message error "${ERR_NOT_SUPPORT_DISTRO[1]}"
       exit ${ERR_NOT_SUPPORT_DISTRO[0]}
     ;;
@@ -261,11 +261,11 @@ check_deps_initsystem() {
 fetch_hyper_package() {
   show_message info "Fetch checksum and package...\n"
   set +e
-  ${BASH_C} "ping -c 3 -W 2 hypercontainer-install.s3.amazonaws.com >/dev/null 2>&1"
+  ${BASH_C} "ping -c 3 -W 2 codius-hyper-install.s3.amazonaws.com >/dev/null 2>&1"
   if [[ $? -ne 0 ]];then
-    S3_URL="http://mirror-hypercontainer-install.s3.amazonaws.com"
+    S3_URL="http://codius-hyper-install.s3.amazonaws.com"
   else
-    S3_URL="http://hypercontainer-install.s3.amazonaws.com"
+    S3_URL="http://codius-hyper-install.s3.amazonaws.com"
   fi
   local SRC_URL="${S3_URL}/${PKG_FILE}"
   local TGT_FILE="${BOOTSTRAP_DIR}/${PKG_FILE}"
@@ -374,7 +374,7 @@ stop_running_hyperd() {
   set +e
   pgrep hyperd >/dev/null 2>&1
   if [[ $? -eq 0 ]];then
-    echo -e "\nStopping running hyperd service before install"
+    echo -e "\nStopping hyperd service before install"
     if [[ "${INIT_SYSTEM}" == "systemd" ]]
     then ${BASH_C} "systemctl stop hyperd"
     else ${BASH_C} "service hyperd stop";
@@ -406,7 +406,7 @@ COMMENT
   else
     show_message warn "\nhyperd isn't running."
     cat <<COMMENT
-Please try to start hyperd by manual:
+Please try to manually start hyperd:
   sudo service hyperd restart
   sudo service hyperd status
 COMMENT
@@ -423,11 +423,11 @@ handle_hyper_rpm_rename(){
 install_from_rpm(){
   show_message info "Fetch rpm package for $1...\n"
   set +e
-  ${BASH_C} "ping -c 3 -W 2 hypercontainer-install.s3.amazonaws.com >/dev/null 2>&1"
+  ${BASH_C} "ping -c 3 -W 2 codius-hyper-install.s3.amazonaws.com >/dev/null 2>&1"
   if [[ $? -ne 0 ]];then
-    S3_URL="http://mirror-hypercontainer-install.s3.amazonaws.com"
+    S3_URL="http://codius-hyper-install.s3.amazonaws.com"
   else
-    S3_URL="http://hypercontainer-install.s3.amazonaws.com"
+    S3_URL="http://codius-hyper-install.s3.amazonaws.com"
   fi
   case "$1" in
     centos7)
@@ -472,11 +472,11 @@ install_from_deb(){
     exit ${ERR_LIBVIRT_NOT_INSTALL[0]}
   fi
 
-  ${BASH_C} "ping -c 3 -W 2 hypercontainer-install.s3.amazonaws.com >/dev/null 2>&1"
+  ${BASH_C} "ping -c 3 -W 2 codius-hyper-install.s3.amazonaws.com >/dev/null 2>&1"
   if [[ $? -ne 0 ]];then
-    S3_URL="http://mirror-hypercontainer-install.s3.amazonaws.com"
+    S3_URL="http://codius-hyper-install.s3.amazonaws.com"
   else
-    S3_URL="http://hypercontainer-install.s3.amazonaws.com"
+    S3_URL="http://codius-hyper-install.s3.amazonaws.com"
   fi
   case "$1" in
     ubuntu|debian)
